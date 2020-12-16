@@ -5,6 +5,12 @@
 %% 1-3 b: cdefg
 %% 2-9 c: ccccccccc
 
+count_char([], _, N, N).
+count_char([H], [H], In, Out) :- Out is In + 1.
+count_char([H], [_], In, In).
+count_char([H|T], [H], In, Out) :- In2 is In + 1, count_char(T, [H], In2, Out).
+count_char([H|T], [C], In, Out) :- count_char(T, [C], In, Out).
+
 identifier([H|T]) --> [H], { code_type(H, digit) ; H = '-' }, identifier(T).
 identifier([]) --> [].
 
@@ -23,9 +29,7 @@ parseit(Out) --> identifier(Min), ['-'], identifier(Max), ws, any(C), [':'], ws,
                    Out = attr{min: Minn, max: Maxn, input: Input, char: C}
                  }.
 
-doit(V) :-
-  %phrase(parseit(V), "5-81 v:").
-  phrase(parseit(V), "8-9 v: vvvvvvvvvg").
+doit(V) :- phrase(parseit(V), "8-9 v: vvvvvvvvvg").
 
 parse(I, O) :-
   atom_string(I, S),
