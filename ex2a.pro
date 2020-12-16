@@ -11,6 +11,21 @@ count_char([H], [_], In, In).
 count_char([H|T], [H], In, Out) :- In2 is In + 1, count_char(T, [H], In2, Out).
 count_char([H|T], [C], In, Out) :- count_char(T, [C], In, Out).
 
+inc(Min, Max, Count, 1) :- Count >= Min, Count =< Max.
+inc(Min, Max, Count, 0).
+
+get_valid_count([], Out, Out).
+get_valid_count([attr{min: Min, max: Max, input: Input, char: C}], Sum, Out) :-
+  count_char(Input, C, 0, Count),
+  inc(Min, Max, Count, Inc),
+  Sum1 is Sum + Inc,
+  get_valid_count(T, Sum1, Out).
+get_valid_count([attr{min: Min, max: Max, input: Input, char: C}|T], Sum, Out) :-
+  count_char(Input, C, 0, Count),
+  inc(Min, Max, Count, Inc),
+  Sum1 is Sum + Inc,
+  get_valid_count(T, Sum1, Out).
+
 identifier([H|T]) --> [H], { code_type(H, digit) ; H = '-' }, identifier(T).
 identifier([]) --> [].
 
@@ -45,6 +60,8 @@ unrow([row(H)|T], Acc, Out) :-
   parse(H, P),
   append([P], Acc, Acc1), unrow(T, Acc1, Out).
 
-main(Data) :-
+% 439
+main(Out) :-
   csv_read_file('ex2.txt', Rows),
-  unrow(Rows, [], Data).
+  unrow(Rows, [], Data),
+  get_valid_count(Data, 0, Out).
