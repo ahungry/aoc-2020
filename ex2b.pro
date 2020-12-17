@@ -5,23 +5,17 @@
 %% 1-3 b: cdefg
 %% 2-9 c: ccccccccc
 
-count_char([], _, N, N).
-count_char([H], [H], In, Out) :- Out is In + 1.
-count_char([_], [_], In, In).
-count_char([H|T], [H], In, Out) :- In2 is In + 1, count_char(T, [H], In2, Out).
-count_char([_|T], [C], In, Out) :- count_char(T, [C], In, Out).
-
-inc(Min, Max, Count, 1) :- Count >= Min, Count =< Max.
-inc(_, _, _, 0).
+% The is valid check basically
+inc(Min, Max, [Char], Word, 1) :- nth1(Min, Word, Char), \+ nth1(Max, Word, Char).
+inc(Min, Max, [Char], Word, 1) :- nth1(Max, Word, Char), \+ nth1(Min, Word, Char).
+inc(_, _, _, _, 0).
 
 get_valid_count([], Out, Out).
 get_valid_count([attr{min: Min, max: Max, input: Input, char: C}], Sum, Out) :-
-  count_char(Input, C, 0, Count),
-  inc(Min, Max, Count, Inc),
+  inc(Min, Max, C, Input, Inc),
   Out is Sum + Inc.
 get_valid_count([attr{min: Min, max: Max, input: Input, char: C}|T], Sum, Out) :-
-  count_char(Input, C, 0, Count),
-  inc(Min, Max, Count, Inc),
+  inc(Min, Max, C, Input, Inc),
   Sum1 is Sum + Inc,
   get_valid_count(T, Sum1, Out).
 
@@ -59,7 +53,7 @@ unrow([row(H)|T], Acc, Out) :-
   parse(H, P),
   append([P], Acc, Acc1), unrow(T, Acc1, Out).
 
-% 439
+% 273 (too low)
 main(Out) :-
   csv_read_file('ex2.txt', Rows),
   unrow(Rows, [], Data),

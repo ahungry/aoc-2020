@@ -11,6 +11,7 @@ count_char([_], [_], In, In).
 count_char([H|T], [H], In, Out) :- In2 is In + 1, count_char(T, [H], In2, Out).
 count_char([_|T], [C], In, Out) :- count_char(T, [C], In, Out).
 
+% The is valid check basically
 inc(Min, Max, Count, 1) :- Count >= Min, Count =< Max.
 inc(_, _, _, 0).
 
