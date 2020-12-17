@@ -1,15 +1,16 @@
 (defn in-range [x]
   (fn [y]
-    (or (= 1 (math/abs (- (x :x) (y :x))))
-        (= 1 (math/abs (- (x :y) (y :y))))
-        (= 1 (math/abs (- (x :z) (y :z)))))))
+    (= 1 (+ (math/abs (- (x :x) (y :x)))
+            (math/abs (- (x :y) (y :y)))
+            (math/abs (- (x :z) (y :z)))))))
 
-(assert (= true ((in-range {:x 0 :y 0 :z 0}) {:x 1 :y 1 :z 1})))
+(assert (= false ((in-range {:x 0 :y 0 :z 0}) {:x 1 :y 1 :z 1})))
+(assert (= true ((in-range {:x 0 :y 0 :z 0}) {:x 1 :y 0 :z 0})))
 
 (defn num-in-range [x xs]
   (length (filter (in-range x) xs)))
 
-(defn n-in-range [n x xs] (= n (num-in-range x xs)))
+(defn n-in-range [n x xs] (= (num-in-range x xs) n))
 (def two-in-range (partial n-in-range 2))
 (def three-in-range (partial n-in-range 3))
 
@@ -49,7 +50,7 @@
         (array/push points p))))
   points)
 
-(def ps (make-points 5 5 5 3 (load-small)))
+(def ps (make-points 8 8 8 3 (load-small)))
 
 (length ps)
 
@@ -59,16 +60,23 @@
 # %% If a cube is inactive but exactly 3 of its neighbors are active,
 # %% the cube becomes active. Otherwise, the cube remains inactive.
 
+(defn next-trans [x xs]
+  (if (x :active)
+    (or (two-in-range x xs)
+        (three-in-range x xs))
+    (three-in-range x xs)))
+
 (defn trans [xs]
   (map (fn [x]
-         (if (x :active)
-           (unless (or (two-in-range x xs)
-                       (three-in-range x xs))
-             (put x :next nil))
-           (when (three-in-range x xs)
-             (put x :next true)))) xs)
-  (map (fn [x] (put x :active (x :next))) xs))
+         (put x :next (next-trans x xs))) xs)
+  (map (fn [x]
+         (put x :active (x :next))) xs))
 
 (trans ps)
+# (trans ps)
+# (trans ps)
+# (trans ps)
+# (trans ps)
+# (trans ps)
 
 (length (filter (fn [x] (x :active)) ps))
