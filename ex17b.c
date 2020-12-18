@@ -1,4 +1,5 @@
-// Completes in 0.049
+// Completes in 6.608 seconds
+// Was it 1884?
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,7 +30,7 @@ n_in_range (P_IN)
                   int diff = x_diff + y_diff + z_diff + w_diff;
                   int active = 0b01 & pts[ix][iy][iz][iw];
 
-                  if (active && diff > 0 && diff <= 3
+                  if (active && diff > 0 && diff <= 4
                       && x_diff < 2 && y_diff < 2 && z_diff < 2 && w_diff < 2)
                     {
                       in_range++;
@@ -119,14 +120,14 @@ main (int argc, char *argv[])
 
   int m = N / 2;
 
-  // Small sample set
-  /* pts[1 + m][0 + m][0 + m] = 0b01; */
-  /* pts[2 + m][1 + m][0 + m] = 0b01; */
-  /* pts[0 + m][2 + m][0 + m] = 0b01; */
-  /* pts[1 + m][2 + m][0 + m] = 0b01; */
-  /* pts[2 + m][2 + m][0 + m] = 0b01; */
+  // Small sample set (848) - getting 848, woohoo
+  /* pts[1 + m][0 + m][0 + m][0 + m] = 0b01; */
+  /* pts[2 + m][1 + m][0 + m][0 + m] = 0b01; */
+  /* pts[0 + m][2 + m][0 + m][0 + m] = 0b01; */
+  /* pts[1 + m][2 + m][0 + m][0 + m] = 0b01; */
+  /* pts[2 + m][2 + m][0 + m][0 + m] = 0b01; */
 
-  // Large sample set
+  // Large sample set (1884)
   pts[3 + m][0 + m][0 + m][0 + m] = 0b01;
   pts[7 + m][0 + m][0 + m][0 + m] = 0b01;
 
