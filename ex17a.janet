@@ -9,16 +9,17 @@
          (< y-diff 2)
          (< z-diff 2))))
 
-(assert (= false ((in-range {:x 0 :y 0 :z 0}) {:x 1 :y 1 :z 1})))
+(assert (= true ((in-range {:x 0 :y 0 :z 0}) {:x 1 :y 1 :z 1})))
 (assert (= true ((in-range {:x 0 :y 0 :z 0}) {:x 1 :y 0 :z 0})))
 (assert (= true ((in-range {:x 0 :y 0 :z 0}) {:x 1 :y 0 :z 0})))
 (assert (= true ((in-range {:x 0 :y 0 :z 0}) {:x 1 :y 1 :z 0})))
-(assert (= true ((in-range {:x 0 :y 0 :z 0}) {:x 1 :y 1 :z 1})))
+(assert (= true ((in-range {:x 0 :y 0 :z 0}) {:x -1 :y 1 :z 1})))
 (assert (= false ((in-range {:x 0 :y 0 :z 0}) {:x 2 :y 0 :z 0})))
 
 (defn num-in-range [x xs]
   (length (filter (fn [y] (and ((in-range x) y)
-                               (y :active))) xs)))
+                               (y :active)
+                               )) xs)))
 
 (defn n-in-range [n x xs] (= (num-in-range x xs) n))
 (def two-in-range (partial n-in-range 2))
@@ -67,7 +68,9 @@
         (array/push points p))))
   points)
 
-(def ps (make-points 9 9 9 3 (load-small)))
+# 2 cycles = 6
+# 3 cycles = 7?
+(def ps (make-points 10 10 10 3 (load-small)))
 
 (length ps)
 
@@ -102,23 +105,13 @@
 
 (pp "Go")
 (trans ps)
-(length (filter (fn [x] (x :active)) ps))
-(pp "Go2")
+(trans ps)
+(trans ps)
+(trans ps)
+(trans ps)
 (trans ps)
 (length (filter (fn [x] (x :active)) ps))
-(pp "Go3")
-(trans ps)
-(length (filter (fn [x] (x :active)) ps))
-(pp "Go4")
-(trans ps)
-(length (filter (fn [x] (x :active)) ps))
-(pp "Go5")
-(trans ps)
-(length (filter (fn [x] (x :active)) ps))
-(pp "Go6")
-(trans ps)
-(length (filter (fn [x] (x :active)) ps))
-(pp "Go7")
+# should be 21, getting 18.. fixed by increasin size
 
-# should be 112
+# should be 112 - 17 minutes lol
 (length (filter (fn [x] (x :active)) ps))
